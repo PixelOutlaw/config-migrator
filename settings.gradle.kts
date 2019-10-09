@@ -1,4 +1,4 @@
-rootProject.name = "mythicdrops"
+rootProject.name = "config-migrator"
 
 gradle.allprojects {
     group = "io.pixeloutlaw.minecraft.spigot"

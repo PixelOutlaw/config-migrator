@@ -20,6 +20,7 @@ plugins {
     id("nebula.maven-publish") version Versions.nebula_maven_publish_gradle_plugin apply false
     id("nebula.nebula-bintray") version Versions.nebula_nebula_bintray_gradle_plugin apply false
     id("nebula.project") version Versions.nebula_project_gradle_plugin apply false
+    id("nebula.release") version Versions.nebula_release_gradle_plugin
 }
 
 subprojects {

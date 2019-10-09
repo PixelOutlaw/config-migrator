@@ -30,6 +30,8 @@ object Versions {
 
     const val nebula_project_gradle_plugin: String = "6.2.0"
 
+    const val nebula_release_gradle_plugin: String = "13.0.0"
+
     const val junit_platform_launcher: String = "none"// No version. See buildSrcVersions#23
 
     const val junit_vintage_engine: String = "none"// No version. See buildSrcVersions#23
