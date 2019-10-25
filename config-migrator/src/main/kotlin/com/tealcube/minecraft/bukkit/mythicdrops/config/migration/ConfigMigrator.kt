@@ -62,7 +62,7 @@ open class ConfigMigrator @JvmOverloads constructor(
                 logger.log(Level.WARNING, "Resource was not a valid config migration: ${it.first}")
                 null
             }
-        }.sortedBy { it.migrationName }
+        }.sortedBy { it.migrationName.substring(it.migrationName.indexOf("V"), it.migrationName.indexOf("__")).substring(1).toInt() }
     }
 
     /**
