@@ -1,8 +1,8 @@
 package com.tealcube.minecraft.bukkit.mythicdrops.config.migration
 
+import java.io.File
 import org.bukkit.configuration.ConfigurationSection
 import org.bukkit.configuration.file.YamlConfiguration
-import java.io.File
 
 /**
  * A rewrite of spigot-commons' `SmartYamlConfiguration` in kotlin.

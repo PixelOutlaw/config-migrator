@@ -55,7 +55,9 @@ class JarConfigMigrator @JvmOverloads constructor(
             }
         }
         logger.fine("Migrations: $retValue")
-        retValue.toList()
+        retValue.toList().sortedBy {
+            it.substring(it.indexOf("V"), it.indexOf("__")).substring(1).toInt()
+        }
     }
 
     override fun getConfigMigrationResources(): List<String> = cachedConfigMigrationResources
