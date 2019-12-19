@@ -36,9 +36,9 @@ object Versions {
 
     const val junit_vintage_engine: String = "none"// No version. See buildSrcVersions#23
 
-    const val org_jetbrains_kotlin: String = "1.3.50"
+    const val org_jetbrains_kotlin: String = "1.3.61"
 
-    const val com_squareup_moshi: String = "1.9.0-SNAPSHOT"
+    const val com_squareup_moshi: String = "1.9.2"
 
     const val junit_jupiter: String = "5.5.2"
 
@@ -46,7 +46,7 @@ object Versions {
 
     const val java_semver: String = "0.9.0"
 
-    const val spigot_api: String = "1.14.4-R0.1-SNAPSHOT"
+    const val spigot_api: String = "1.15.1-R0.1-SNAPSHOT"
 
     const val junit_bom: String = "5.5.2"
 
