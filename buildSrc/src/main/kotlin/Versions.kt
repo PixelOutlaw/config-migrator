@@ -1,4 +1,4 @@
-import kotlin.String
+
 import org.gradle.plugin.use.PluginDependenciesSpec
 import org.gradle.plugin.use.PluginDependencySpec
 
@@ -12,37 +12,35 @@ import org.gradle.plugin.use.PluginDependencySpec
  * YOU are responsible for updating manually the dependency version.
  */
 object Versions {
-    const val com_diffplug_gradle_spotless_gradle_plugin: String = "3.25.0"
+    const val org_jetbrains_kotlin: String = "1.3.61"
 
-    const val io_gitlab_arturbosch_detekt_gradle_plugin: String = "1.1.0"
+    const val com_squareup_moshi: String = "1.9.2"
 
-    const val de_fayard_buildsrcversions_gradle_plugin: String = "0.6.4"
+    const val com_diffplug_gradle_spotless_gradle_plugin: String = "3.27.0"
 
-    const val org_jetbrains_kotlin_jvm_gradle_plugin: String = "1.3.50"
+    const val io_gitlab_arturbosch_detekt_gradle_plugin: String = "1.3.1"
 
-    const val com_gradle_build_scan_gradle_plugin: String = "2.4.2"
+    const val de_fayard_buildsrcversions_gradle_plugin: String = "0.7.0"
 
-    const val nebula_nebula_bintray_gradle_plugin: String = "7.4.1"
+    const val org_jetbrains_kotlin_jvm_gradle_plugin: String = "1.3.61"
 
-    const val nebula_maven_publish_gradle_plugin: String = "14.0.0"
+    const val nebula_nebula_bintray_gradle_plugin: String = "8.0.0"
+
+    const val nebula_maven_publish_gradle_plugin: String = "14.1.1"
 
     const val org_jetbrains_dokka_gradle_plugin: String = "0.10.0"
 
-    const val nebula_project_gradle_plugin: String = "6.2.0"
+    const val nebula_project_gradle_plugin: String = "7.0.4"
 
-    const val nebula_release_gradle_plugin: String = "13.0.0"
+    const val nebula_release_gradle_plugin: String = "14.0.2"
 
     const val junit_platform_launcher: String = "none"// No version. See buildSrcVersions#23
 
     const val junit_vintage_engine: String = "none"// No version. See buildSrcVersions#23
 
-    const val org_jetbrains_kotlin: String = "1.3.61"
-
-    const val com_squareup_moshi: String = "1.9.2"
-
     const val junit_jupiter: String = "5.5.2"
 
-    const val mockito_core: String = "3.1.0"
+    const val mockito_core: String = "3.2.4"
 
     const val java_semver: String = "0.9.0"
 
@@ -50,7 +48,7 @@ object Versions {
 
     const val junit_bom: String = "5.5.2"
 
-    const val junit: String = "4.12"
+    const val junit: String = "4.13"
 
     const val mockk: String = "1.9.3"
 
@@ -59,11 +57,11 @@ object Versions {
     const val klob: String = "0.2.1"
 
     /**
-     * Current version: "5.6.2"
+     * Current version: "6.0.1"
      * See issue 19: How to update Gradle itself?
      * https://github.com/jmfayard/buildSrcVersions/issues/19
      */
-    const val gradleLatestVersion: String = "5.6.2"
+    const val gradleLatestVersion: String = "6.0.1"
 }
 
 /**
