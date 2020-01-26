@@ -21,7 +21,8 @@ import java.util.logging.Logger
 open class ConfigMigrator @JvmOverloads constructor(
     private val dataFolder: File,
     private val baseConfigMigrationResources: List<String> = emptyList(),
-    private val moshi: Moshi = defaultMoshi
+    private val moshi: Moshi = defaultMoshi,
+    private val backupOnMigrate: Boolean = true
 ) {
     companion object {
         val defaultMoshi: Moshi = Moshi.Builder().add(VersionAdapter).add(ConfigMigrationStep.adapterFactory).build()
@@ -163,7 +164,7 @@ open class ConfigMigrator @JvmOverloads constructor(
         configMigration: ConfigMigration,
         yamlConfiguration: VersionedSmarterYamlConfiguration
     ) {
-        if (configMigration.createBackup) {
+        if (configMigration.createBackup && backupOnMigrate) {
             val lastDot = yamlConfiguration.fileName.lastIndexOf(".")
             val backupFilename = yamlConfiguration.fileName.substring(
                 0,
