@@ -29,8 +29,9 @@ import java.util.zip.ZipFile
 class JarConfigMigrator @JvmOverloads constructor(
     private val jarFile: File,
     dataFolder: File,
-    moshi: Moshi = defaultMoshi
-) : ConfigMigrator(dataFolder, emptyList(), moshi) {
+    moshi: Moshi = defaultMoshi,
+    backupOnMigrate: Boolean = true
+) : ConfigMigrator(dataFolder, emptyList(), moshi, backupOnMigrate) {
     companion object {
         private const val configMigrationPatternString = "config/migration/V\\d+__.+\\.migration\\.json"
         private val configMigrationRegex = configMigrationPatternString.toRegex()
