@@ -16,9 +16,9 @@ object Versions {
 
     const val com_squareup_moshi: String = "1.9.2"
 
-    const val com_diffplug_gradle_spotless_gradle_plugin: String = "3.27.0"
+    const val com_diffplug_gradle_spotless_gradle_plugin: String = "3.27.1"
 
-    const val io_gitlab_arturbosch_detekt_gradle_plugin: String = "1.3.1"
+    const val io_gitlab_arturbosch_detekt_gradle_plugin: String = "1.4.0"
 
     const val de_fayard_buildsrcversions_gradle_plugin: String = "0.7.0"
 
@@ -30,29 +30,29 @@ object Versions {
 
     const val org_jetbrains_dokka_gradle_plugin: String = "0.10.0"
 
-    const val nebula_project_gradle_plugin: String = "7.0.4"
+    const val nebula_project_gradle_plugin: String = "7.0.6"
 
-    const val nebula_release_gradle_plugin: String = "14.0.2"
+    const val nebula_release_gradle_plugin: String = "14.0.3"
 
     const val junit_platform_launcher: String = "none"// No version. See buildSrcVersions#23
 
     const val junit_vintage_engine: String = "none"// No version. See buildSrcVersions#23
 
-    const val junit_jupiter: String = "5.5.2"
+    const val junit_jupiter: String = "5.6.0"
 
     const val mockito_core: String = "3.2.4"
 
     const val java_semver: String = "0.9.0"
 
-    const val spigot_api: String = "1.15.1-R0.1-SNAPSHOT"
+    const val spigot_api: String = "1.15.2-R0.1-SNAPSHOT"
 
-    const val junit_bom: String = "5.5.2"
+    const val junit_bom: String = "5.6.0"
 
     const val junit: String = "4.13"
 
     const val mockk: String = "1.9.3"
 
-    const val truth: String = "1.0"
+    const val truth: String = "1.0.1"
 
     const val klob: String = "0.2.1"
 
@@ -61,7 +61,7 @@ object Versions {
      * See issue 19: How to update Gradle itself?
      * https://github.com/jmfayard/buildSrcVersions/issues/19
      */
-    const val gradleLatestVersion: String = "6.0.1"
+    const val gradleLatestVersion: String = "6.1.1"
 }
 
 /**
