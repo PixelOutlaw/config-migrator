@@ -17,7 +17,7 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version Versions.io_gitlab_arturbosch_detekt_gradle_plugin apply false
     id("org.jetbrains.dokka") version Versions.org_jetbrains_dokka_gradle_plugin
     id("nebula.maven-publish") version Versions.nebula_maven_publish_gradle_plugin apply false
-    id("nebula.nebula-bintray") version Versions.nebula_nebula_bintray_gradle_plugin apply false
+    id("nebula.nebula-bintray") version Versions.nebula_nebula_bintray_gradle_plugin
     id("nebula.project") version Versions.nebula_project_gradle_plugin apply false
     id("nebula.release") version Versions.nebula_release_gradle_plugin
 }
@@ -29,12 +29,6 @@ subprojects {
         this@subprojects.pluginManager.apply(BintrayPlugin::class.java)
         this@subprojects.pluginManager.apply(SpotlessPlugin::class.java)
 
-        this@subprojects.configure<BintrayExtension> {
-            pkgName.value("config-migrator")
-            repo.value("pixeloutlaw-jars")
-            userOrg.value("pixeloutlaw")
-            syncToMavenCentral.value(false)
-        }
         this@subprojects.configure<SpotlessExtension> {
             java {
                 target("src/**/*.java")
@@ -122,6 +116,13 @@ subprojects {
             "testImplementation"(Libs.mockk)
         }
     }
+}
+
+bintray {
+    pkgName.value("config-migrator")
+    repo.value("pixeloutlaw-jars")
+    userOrg.value("pixeloutlaw")
+    syncToMavenCentral.value(false)
 }
 
 tasks.withType<Wrapper> {
