@@ -32,10 +32,12 @@ open class ConfigMigrator @JvmOverloads constructor(
     /**
      * Lazy cache of contents derived from [getConfigMigrationResources].
      */
-    val configMigrationContents: List<Pair<String, String>> by lazy {
+    private val configMigrationContents: List<Pair<String, String>> by lazy {
         getConfigMigrationResources().mapNotNull {
             try {
-                it to javaClass.classLoader.getResource(it).readText()
+                javaClass.classLoader?.getResource(it)?.let { resource ->
+                    it to resource.readText()
+                }
             } catch (throwable: Throwable) {
                 logger.log(Level.WARNING, "Unable to load migration resource: $it", throwable)
                 null
@@ -46,7 +48,7 @@ open class ConfigMigrator @JvmOverloads constructor(
     /**
      * Lazy cache of parsed migrations derived from [configMigrationContents]. Sorted by name.
      */
-    val namedConfigMigrations: List<NamedConfigMigration> by lazy {
+    private val namedConfigMigrations: List<NamedConfigMigration> by lazy {
         configMigrationContents.mapNotNull {
             val configMigration = try {
                 moshi.adapter(ConfigMigration::class.java).fromJson(it.second)
@@ -63,7 +65,10 @@ open class ConfigMigrator @JvmOverloads constructor(
                 logger.log(Level.WARNING, "Resource was not a valid config migration: ${it.first}")
                 null
             }
-        }.sortedBy { it.migrationName.substring(it.migrationName.indexOf("V"), it.migrationName.indexOf("__")).substring(1).toInt() }
+        }.sortedBy {
+            it.migrationName.substring(it.migrationName.indexOf("V"), it.migrationName.indexOf("__")).substring(1)
+                .toInt()
+        }
     }
 
     /**
@@ -91,8 +96,12 @@ open class ConfigMigrator @JvmOverloads constructor(
             return
         }
         try {
-            val text = javaClass.classLoader.getResource(resource).readText()
-            SmarterYamlConfiguration(targetFile).apply { loadFromString(text); save() }
+            val text = javaClass.classLoader?.getResource(resource)?.readText()
+            if (text != null) {
+                SmarterYamlConfiguration(targetFile).apply { loadFromString(text); save() }
+            } else {
+                logger.log(Level.WARNING, "Unable to write resource because text was unreadable: $resource")
+            }
         } catch (throwable: Throwable) {
             logger.log(Level.WARNING, "Unable to write resource: $resource", throwable)
             return
@@ -198,7 +207,7 @@ open class ConfigMigrator @JvmOverloads constructor(
         val relativizedPathToYamlFile = normalizedPathToDataFolder.relativize(pathToYamlFile)
         val pathToResource = relativizedPathToYamlFile.toString().replace("\\", "/")
         try {
-            val resourceContents = javaClass.classLoader.getResource(pathToResource).readText()
+            val resourceContents = javaClass.classLoader?.getResource(pathToResource)?.readText() ?: ""
             yamlConfiguration.file?.writeText(resourceContents)
             logger.fine(
                 """
