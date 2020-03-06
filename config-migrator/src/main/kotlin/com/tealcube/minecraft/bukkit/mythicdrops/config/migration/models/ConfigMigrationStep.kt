@@ -24,6 +24,7 @@ sealed class ConfigMigrationStep(val reason: String = "") {
                     "set_string_list_if_key_equals_string"
                 )
                 .withSubtype(ForEachConfigMigrationStep::class.java, "for_each")
+                .withSubtype(RenameEachConfigMigrationStep::class.java, "rename_each")
     }
 
     abstract fun migrate(configuration: ConfigurationSection)
@@ -55,6 +56,19 @@ data class ForEachConfigMigrationStep(
             for (configMigrationStep in configMigrationSteps) {
                 configMigrationStep.migrate(matchesSection)
             }
+        }
+    }
+}
+
+@JsonClass(generateAdapter = true)
+data class RenameEachConfigMigrationStep(val matchRegex: String, val to: String) : ConfigMigrationStep() {
+    override fun migrate(configuration: ConfigurationSection) {
+        val parentRegex = matchRegex.toRegex()
+        val keysThatMatchParent = configuration.getKeys(true).filter { it.matches(parentRegex) }
+        for (keyThatMatchesParent in keysThatMatchParent) {
+            val oldValue = configuration[keyThatMatchesParent]
+            configuration[keyThatMatchesParent] = null
+            configuration[to.replace("%self%", keyThatMatchesParent)] = oldValue
         }
     }
 }
