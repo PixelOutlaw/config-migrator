@@ -4,8 +4,8 @@ import com.github.zafarkhaja.semver.Version
 import com.google.common.truth.Truth.assertThat
 import com.squareup.moshi.Moshi
 import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.adapters.VersionAdapter
-import org.junit.Assert
-import org.junit.Test
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
 
 class ConfigMigrationTest {
     private val moshi = Moshi.Builder().add(VersionAdapter).add(ConfigMigrationStep.adapterFactory).build()
@@ -15,8 +15,8 @@ class ConfigMigrationTest {
         val jsonString = javaClass.getResource("/config_migration_no_steps.json").readText()
         val configMigration = moshi.adapter(ConfigMigration::class.java).fromJson(jsonString)
         if (configMigration == null) {
-            Assert.fail("configMigration == null")
-            return
+            Assertions.fail<Unit>("configMigration == null")
+            return // appeasing the compiler, will never be run
         }
         assertThat(configMigration.fileGlobs).isEqualTo(listOf("config.yml"))
         assertThat(configMigration.fromVersion).isEqualTo(Version.valueOf("1.2.3"))
@@ -29,8 +29,8 @@ class ConfigMigrationTest {
         val jsonString = javaClass.getResource("/config_migration_multiple_steps.json").readText()
         val configMigration = moshi.adapter(ConfigMigration::class.java).fromJson(jsonString)
         if (configMigration == null) {
-            Assert.fail("configMigration == null")
-            return
+            Assertions.fail<Unit>("configMigration == null")
+            return // appeasing the compiler, will never be run
         }
         assertThat(configMigration.fileGlobs).isEqualTo(listOf("config.yml"))
         assertThat(configMigration.fromVersion).isEqualTo(Version.valueOf("1.2.3"))

@@ -22,8 +22,8 @@
 package com.tealcube.minecraft.bukkit.mythicdrops.config.migration
 
 import com.squareup.moshi.Moshi
+import io.pixeloutlaw.minecraft.spigot.bandsaw.JulLoggerFactory
 import java.io.File
-import java.util.logging.Logger
 import java.util.zip.ZipFile
 
 class JarConfigMigrator @JvmOverloads constructor(
@@ -35,7 +35,7 @@ class JarConfigMigrator @JvmOverloads constructor(
     companion object {
         private const val configMigrationPatternString = "config/migration/V\\d+__.+\\.migration\\.json"
         private val configMigrationRegex = configMigrationPatternString.toRegex()
-        private val logger = Logger.getLogger(JarConfigMigrator::class.java.canonicalName)
+        private val logger by lazy { JulLoggerFactory.getLogger(JarConfigMigrator::class) }
     }
 
     private val cachedConfigMigrationResources: List<String> by lazy {

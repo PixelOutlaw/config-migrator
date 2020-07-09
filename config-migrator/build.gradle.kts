@@ -11,7 +11,9 @@ dependencies {
     api(Libs.moshi_adapters)
     api(Libs.klob)
 
+    implementation(platform(Libs.spigot_commons_bom))
     implementation(Libs.kotlin_stdlib_jdk8)
+    implementation(Libs.bandsaw)
 
     kapt(Libs.moshi_kotlin_codegen)
 }

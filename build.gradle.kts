@@ -52,6 +52,9 @@ subprojects {
         }
         this@subprojects.tasks.withType<Test> {
             useJUnitPlatform()
+            testLogging {
+                events("passed", "skipped", "failed")
+            }
         }
 
         this@subprojects.dependencies {
@@ -60,13 +63,6 @@ subprojects {
             "testImplementation"(Libs.truth)
             "testImplementation"(platform(Libs.junit_bom))
             "testImplementation"("org.junit.jupiter:junit-jupiter")
-            "testImplementation"(Libs.junit)
-            "testRuntimeOnly"("org.junit.vintage:junit-vintage-engine") {
-                because("allows JUnit 3 and JUnit 4 tests to run")
-            }
-            "testRuntimeOnly"("org.junit.platform:junit-platform-launcher") {
-                because("allows tests to run from IDEs that bundle older version of launcher")
-            }
         }
     }
     pluginManager.withPlugin("org.jetbrains.kotlin.jvm") {

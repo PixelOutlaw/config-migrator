@@ -6,10 +6,10 @@ import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.adapters.Versi
 import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.models.ConfigMigration
 import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.models.ConfigMigrationStep
 import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.models.NamedConfigMigration
+import io.pixeloutlaw.minecraft.spigot.bandsaw.JulLoggerFactory
 import java.io.File
 import java.nio.file.Path
 import java.util.logging.Level
-import java.util.logging.Logger
 
 /**
  * Migrates Spigot YAML configurations across versions.
@@ -26,7 +26,7 @@ open class ConfigMigrator @JvmOverloads constructor(
 ) {
     companion object {
         val defaultMoshi: Moshi = Moshi.Builder().add(VersionAdapter).add(ConfigMigrationStep.adapterFactory).build()
-        val logger: Logger by lazy { Logger.getLogger(ConfigMigrator::class.java.canonicalName) }
+        private val logger by lazy { JulLoggerFactory.getLogger(ConfigMigrator::class) }
     }
 
     /**

@@ -8,6 +8,18 @@ import kotlin.String
  */
 object Libs {
     /**
+     * https://github.com/PixelOutlaw/spigot-plugin-parent
+     */
+    const val bandsaw: String = "io.pixeloutlaw.spigot-commons:bandsaw:" +
+            Versions.io_pixeloutlaw_spigot_commons
+
+    /**
+     * https://github.com/PixelOutlaw/spigot-plugin-parent
+     */
+    const val spigot_commons_bom: String = "io.pixeloutlaw.spigot-commons:spigot-commons-bom:" +
+            Versions.io_pixeloutlaw_spigot_commons
+
+    /**
      * https://kotlinlang.org/
      */
     const val kotlin_annotation_processing_gradle: String =
@@ -87,16 +99,6 @@ object Libs {
     /**
      * https://junit.org/junit5/
      */
-    const val junit_platform_launcher: String = "org.junit.platform:junit-platform-launcher"
-
-    /**
-     * https://junit.org/junit5/
-     */
-    const val junit_vintage_engine: String = "org.junit.vintage:junit-vintage-engine"
-
-    /**
-     * https://junit.org/junit5/
-     */
     const val junit_jupiter: String = "org.junit.jupiter:junit-jupiter:" + Versions.junit_jupiter
 
     /**
@@ -115,11 +117,6 @@ object Libs {
      * https://junit.org/junit5/
      */
     const val junit_bom: String = "org.junit:junit-bom:" + Versions.junit_bom
-
-    /**
-     * http://junit.org
-     */
-    const val junit: String = "junit:junit:" + Versions.junit
 
     /**
      * http://mockk.io
