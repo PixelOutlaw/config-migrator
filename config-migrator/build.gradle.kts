@@ -6,7 +6,6 @@ plugins {
 dependencies {
     compileOnly(Libs.spigot_api)
 
-    api(Libs.java_semver)
     api(Libs.moshi)
     api(Libs.moshi_adapters)
     api(Libs.klob)

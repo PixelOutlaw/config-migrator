@@ -1,7 +1,7 @@
 package com.tealcube.minecraft.bukkit.mythicdrops.config.migration.models
 
-import com.github.zafarkhaja.semver.Version
 import com.squareup.moshi.JsonClass
+import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.SemVer
 
 /**
  * Represents a migration.
@@ -14,8 +14,8 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class ConfigMigration(
     val fileGlobs: List<String>,
-    val fromVersion: Version,
-    val toVersion: Version,
+    val fromVersion: SemVer,
+    val toVersion: SemVer,
     val configMigrationSteps: List<ConfigMigrationStep> = emptyList(),
     val createBackup: Boolean = true,
     val overwrite: Boolean = false

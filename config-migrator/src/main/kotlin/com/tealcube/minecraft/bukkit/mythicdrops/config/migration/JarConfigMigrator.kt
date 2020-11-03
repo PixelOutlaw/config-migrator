@@ -41,7 +41,7 @@ class JarConfigMigrator @JvmOverloads constructor(
     private val cachedConfigMigrationResources: List<String> by lazy {
         val zipFile = try {
             ZipFile(jarFile)
-        } catch (ex: Exception) {
+        } catch (inevitable: Exception) {
             return@lazy emptyList<String>()
         }
         val retValue = mutableListOf<String>()

@@ -2,7 +2,7 @@ package com.tealcube.minecraft.bukkit.mythicdrops.config.migration
 
 import com.github.shyiko.klob.Glob
 import com.squareup.moshi.Moshi
-import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.adapters.VersionAdapter
+import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.adapters.SemVerAdapter
 import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.models.ConfigMigration
 import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.models.ConfigMigrationStep
 import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.models.NamedConfigMigration
@@ -25,7 +25,7 @@ open class ConfigMigrator @JvmOverloads constructor(
     private val backupOnMigrate: Boolean = true
 ) {
     companion object {
-        val defaultMoshi: Moshi = Moshi.Builder().add(VersionAdapter).add(ConfigMigrationStep.adapterFactory).build()
+        val defaultMoshi: Moshi = Moshi.Builder().add(SemVerAdapter).add(ConfigMigrationStep.adapterFactory).build()
         private val logger by lazy { JulLoggerFactory.getLogger(ConfigMigrator::class) }
     }
 
@@ -38,8 +38,8 @@ open class ConfigMigrator @JvmOverloads constructor(
                 javaClass.classLoader?.getResource(it)?.let { resource ->
                     it to resource.readText()
                 }
-            } catch (throwable: Throwable) {
-                logger.log(Level.WARNING, "Unable to load migration resource: $it", throwable)
+            } catch (inevitable: Throwable) {
+                logger.log(Level.WARNING, "Unable to load migration resource: $it", inevitable)
                 null
             }
         }
@@ -52,8 +52,8 @@ open class ConfigMigrator @JvmOverloads constructor(
         configMigrationContents.mapNotNull {
             val configMigration = try {
                 moshi.adapter(ConfigMigration::class.java).fromJson(it.second)
-            } catch (throwable: Throwable) {
-                logger.log(Level.WARNING, "Unable to read resource JSON: ${it.first}", throwable)
+            } catch (inevitable: Throwable) {
+                logger.log(Level.WARNING, "Unable to read resource JSON: ${it.first}", inevitable)
                 null
             }
             if (configMigration != null) {
@@ -98,12 +98,15 @@ open class ConfigMigrator @JvmOverloads constructor(
         try {
             val text = javaClass.classLoader?.getResource(resource)?.readText()
             if (text != null) {
-                SmarterYamlConfiguration(targetFile).apply { loadFromString(text); save() }
+                SmarterYamlConfiguration(targetFile).apply {
+                    loadFromString(text)
+                    save()
+                }
             } else {
                 logger.log(Level.WARNING, "Unable to write resource because text was unreadable: $resource")
             }
-        } catch (throwable: Throwable) {
-            logger.log(Level.WARNING, "Unable to write resource: $resource", throwable)
+        } catch (inevitable: Throwable) {
+            logger.log(Level.WARNING, "Unable to write resource: $resource", inevitable)
             return
         }
     }
@@ -187,8 +190,8 @@ open class ConfigMigrator @JvmOverloads constructor(
                 yamlConfiguration.file?.let {
                     it.copyTo(File(it.parentFile, backupFilename), overwrite = true)
                 }
-            } catch (ex: Exception) {
-                logger.log(Level.SEVERE, "Unable to create a backup of a config!", ex)
+            } catch (inevitable: Exception) {
+                logger.log(Level.SEVERE, "Unable to create a backup of a config!", inevitable)
             }
         }
     }
@@ -199,10 +202,10 @@ open class ConfigMigrator @JvmOverloads constructor(
         yamlConfiguration: VersionedSmarterYamlConfiguration,
         pathToDataFolder: Path
     ): Boolean {
-        if (!configMigration.overwrite) {
+        val pathToYamlFile = yamlConfiguration.file?.toPath()?.toAbsolutePath()?.normalize()
+        if (!configMigration.overwrite || pathToYamlFile == null) {
             return false
         }
-        val pathToYamlFile = yamlConfiguration.file?.toPath()?.toAbsolutePath()?.normalize() ?: return false
         val normalizedPathToDataFolder = pathToDataFolder.toAbsolutePath().normalize()
         val relativizedPathToYamlFile = normalizedPathToDataFolder.relativize(pathToYamlFile)
         val pathToResource = relativizedPathToYamlFile.toString().replace("\\", "/")
@@ -215,8 +218,8 @@ open class ConfigMigrator @JvmOverloads constructor(
                 |contents of (hopefully) same file from plugin!
                 """.trimLog()
             )
-        } catch (ex: Exception) {
-            logger.log(Level.SEVERE, "Unable to overwrite a config!", ex)
+        } catch (inevitable: Exception) {
+            logger.log(Level.SEVERE, "Unable to overwrite a config!", inevitable)
         }
         return true
     }
