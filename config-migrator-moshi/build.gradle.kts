@@ -4,9 +4,9 @@ plugins {
 
 dependencies {
     api("com.squareup.moshi:moshi:_")
+    api(project(":config-migrator"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:_")
-    implementation(project(":config-migrator"))
     implementation("com.squareup.moshi:moshi-adapters:_")
 
     testImplementation("org.spigotmc:spigot-api:_")
