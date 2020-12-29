@@ -1,12 +1,12 @@
 package com.tealcube.minecraft.bukkit.mythicdrops.config.migration
 
 import com.github.shyiko.klob.Glob
-import com.squareup.moshi.Moshi
-import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.adapters.SemVerAdapter
 import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.models.ConfigMigration
 import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.models.ConfigMigrationStep
 import com.tealcube.minecraft.bukkit.mythicdrops.config.migration.models.NamedConfigMigration
 import io.pixeloutlaw.minecraft.spigot.bandsaw.JulLoggerFactory
+import io.pixeloutlaw.minecraft.spigot.config.FileAwareYamlConfiguration
+import io.pixeloutlaw.minecraft.spigot.config.VersionedFileAwareYamlConfiguration
 import java.io.File
 import java.nio.file.Path
 import java.util.logging.Level
@@ -15,66 +15,20 @@ import java.util.logging.Level
  * Migrates Spigot YAML configurations across versions.
  *
  * @property dataFolder data folder for a plugin
- * @property baseConfigMigrationResources any default config migration resources to include
- * @property moshi Moshi instance to use to parse migration instructions
+ * @property backupOnMigrate should a backup file be created when migrating?
  */
-open class ConfigMigrator @JvmOverloads constructor(
+abstract class ConfigMigrator @JvmOverloads constructor(
     private val dataFolder: File,
-    private val baseConfigMigrationResources: List<String> = emptyList(),
-    private val moshi: Moshi = defaultMoshi,
     private val backupOnMigrate: Boolean = true
 ) {
-    companion object {
-        val defaultMoshi: Moshi = Moshi.Builder().add(SemVerAdapter).add(ConfigMigrationStep.adapterFactory).build()
-        private val logger by lazy { JulLoggerFactory.getLogger(ConfigMigrator::class) }
+    private companion object {
+        val logger by lazy { JulLoggerFactory.getLogger(ConfigMigrator::class) }
     }
 
     /**
-     * Lazy cache of contents derived from [getConfigMigrationResources].
+     * Migrations that this instance will run through in the given order.
      */
-    private val configMigrationContents: List<Pair<String, String>> by lazy {
-        getConfigMigrationResources().mapNotNull {
-            try {
-                javaClass.classLoader?.getResource(it)?.let { resource ->
-                    it to resource.readText()
-                }
-            } catch (inevitable: Throwable) {
-                logger.log(Level.WARNING, "Unable to load migration resource: $it", inevitable)
-                null
-            }
-        }
-    }
-
-    /**
-     * Lazy cache of parsed migrations derived from [configMigrationContents]. Sorted by name.
-     */
-    private val namedConfigMigrations: List<NamedConfigMigration> by lazy {
-        configMigrationContents.mapNotNull {
-            val configMigration = try {
-                moshi.adapter(ConfigMigration::class.java).fromJson(it.second)
-            } catch (inevitable: Throwable) {
-                logger.log(Level.WARNING, "Unable to read resource JSON: ${it.first}", inevitable)
-                null
-            }
-            if (configMigration != null) {
-                NamedConfigMigration(
-                    it.first,
-                    configMigration
-                )
-            } else {
-                logger.log(Level.WARNING, "Resource was not a valid config migration: ${it.first}")
-                null
-            }
-        }.sortedBy {
-            it.migrationName.substring(it.migrationName.indexOf("V"), it.migrationName.indexOf("__")).substring(1)
-                .toInt()
-        }
-    }
-
-    /**
-     * Gets the config migration resources to load.
-     */
-    open fun getConfigMigrationResources(): List<String> = baseConfigMigrationResources
+    abstract val namedConfigMigrations: List<NamedConfigMigration>
 
     /**
      * Attempts to run all of the migrations that it is aware of. Will not copy configurations from resources
@@ -84,7 +38,11 @@ open class ConfigMigrator @JvmOverloads constructor(
      */
     fun migrate() {
         logger.info("Beginning migration process")
-        for (namedConfigMigration in namedConfigMigrations) {
+        val sortedNamedConfigMigrations = namedConfigMigrations.sortedBy {
+            it.migrationName.substring(it.migrationName.indexOf("V"), it.migrationName.indexOf("__")).substring(1)
+                .toInt()
+        }
+        for (namedConfigMigration in sortedNamedConfigMigrations) {
             runMigration(namedConfigMigration)
         }
         logger.info("Finished migration process!")
@@ -98,7 +56,7 @@ open class ConfigMigrator @JvmOverloads constructor(
         try {
             val text = javaClass.classLoader?.getResource(resource)?.readText()
             if (text != null) {
-                SmarterYamlConfiguration(targetFile).apply {
+                FileAwareYamlConfiguration(targetFile).apply {
                     loadFromString(text)
                     save()
                 }
@@ -123,7 +81,7 @@ open class ConfigMigrator @JvmOverloads constructor(
         logger.fine("=> Loading matched files to check their versions")
         val yamlConfigurations = matchingPaths.map {
             val pathToFile = it.toFile()
-            VersionedSmarterYamlConfiguration(
+            VersionedFileAwareYamlConfiguration(
                 pathToFile
             )
         }.filter {
@@ -142,7 +100,7 @@ open class ConfigMigrator @JvmOverloads constructor(
     }
 
     private fun runMigrationOverConfigurations(
-        yamlConfigurations: List<VersionedSmarterYamlConfiguration>,
+        yamlConfigurations: List<VersionedFileAwareYamlConfiguration>,
         configMigration: ConfigMigration
     ) {
         for (yamlConfiguration in yamlConfigurations) {
@@ -174,17 +132,19 @@ open class ConfigMigrator @JvmOverloads constructor(
 
     private fun handleBackups(
         configMigration: ConfigMigration,
-        yamlConfiguration: VersionedSmarterYamlConfiguration
+        yamlConfiguration: VersionedFileAwareYamlConfiguration
     ) {
         if (configMigration.createBackup && backupOnMigrate) {
             val lastDot = yamlConfiguration.fileName.lastIndexOf(".")
             val backupFilename = yamlConfiguration.fileName.substring(
                 0,
                 lastDot
-            ) + "_${yamlConfiguration.version.toString().replace(
+            ) + "_${
+            yamlConfiguration.version.toString().replace(
                 ".",
                 "_"
-            )}" + yamlConfiguration.fileName.substring(lastDot) + ".backup"
+            )
+            }" + yamlConfiguration.fileName.substring(lastDot) + ".backup"
             logger.fine("==> Creating backup of file as $backupFilename")
             try {
                 yamlConfiguration.file?.let {
@@ -199,7 +159,7 @@ open class ConfigMigrator @JvmOverloads constructor(
     // if this returns true, we should skip the migration as we're just overwriting the existing file
     private fun handleOverwrites(
         configMigration: ConfigMigration,
-        yamlConfiguration: VersionedSmarterYamlConfiguration,
+        yamlConfiguration: VersionedFileAwareYamlConfiguration,
         pathToDataFolder: Path
     ): Boolean {
         val pathToYamlFile = yamlConfiguration.file?.toPath()?.toAbsolutePath()?.normalize()
@@ -223,8 +183,11 @@ open class ConfigMigrator @JvmOverloads constructor(
         }
         return true
     }
-}
 
-private fun String.trimLog(): String {
-    return this.trimMargin().replace("\n", " ")
+    /**
+     * Trims the margins from the string and replaces newlines with a space.
+     */
+    private fun String.trimLog(): String {
+        return this.trimMargin().replace("\n", " ")
+    }
 }

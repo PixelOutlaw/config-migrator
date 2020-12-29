@@ -1,4 +1,11 @@
-rootProject.name = "config-migrator"
+import de.fayard.refreshVersions.bootstrapRefreshVersions
+
+buildscript {
+    repositories { gradlePluginPortal() }
+    dependencies.classpath("de.fayard.refreshVersions:refreshVersions:0.9.7")
+}
+
+bootstrapRefreshVersions()
 
 gradle.allprojects {
     group = "io.pixeloutlaw.minecraft.spigot"
@@ -17,6 +24,10 @@ gradle.allprojects {
     }
 }
 
+rootProject.name = "config-migrator"
+
 include(
-    "config-migrator"
+    "config-migrator-config",
+    "config-migrator",
+    "config-migrator-moshi"
 )
