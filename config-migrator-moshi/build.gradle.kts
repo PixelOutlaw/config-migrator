@@ -7,6 +7,8 @@ dependencies {
     api(project(":config-migrator"))
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:_")
+    implementation(platform("io.pixeloutlaw.spigot-commons:spigot-commons-bom:_"))
+    implementation("io.pixeloutlaw.spigot-commons:bandsaw")
     implementation("com.squareup.moshi:moshi-adapters:_")
 
     testImplementation("org.spigotmc:spigot-api:_")
